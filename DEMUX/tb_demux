@@ -1,0 +1,48 @@
+module tb_demux_1x4;
+
+  // Inputs
+  reg d;       // Data input
+  reg S0;      // Select input bit 0
+  reg S1;      // Select input bit 1
+
+  // Outputs
+  wire y0;     // Output 0
+  wire y1;     // Output 1
+  wire y2;     // Output 2
+  wire y3;     // Output 3
+
+  // Instantiate the 1x4 demultiplexer
+  demux_1x4 demux (
+    .d(d),
+    .S0(S0),
+    .S1(S1),
+    .y0(y0),
+    .y1(y1),
+    .y2(y2),
+    .y3(y3)
+  );
+
+  // Initial block to apply stimulus
+  initial begin
+    d = 1'b0; S1 = 1'b0; S0 = 1'b0; // Initial values
+    #10 d = 1'b1;                   // Change data input
+    #10 S1 = 1'b0; S0 = 1'b1;       // Change select inputs
+    #10 d = 1'b0;                   // Change data input
+    #10 S1 = 1'b1; S0 = 1'b0;       // Change select inputs
+    #10 S1 = 1'b1; S0 = 1'b1;       // Change select inputs
+    #10 $finish;                    // End simulation
+  end
+
+  // Display block to monitor signals
+  initial begin 
+    $monitor("%t d=%b S1=%b S0=%b y0=%b y1=%b y2=%b y3=%b",
+             $time, d, S1, S0, y0, y1, y2, y3);
+  end
+
+  // Dump waveform data
+  initial begin
+    $dumpfile("demux_1x4.vcd");
+    $dumpvars(0, tb_demux_1x4); // Dump variables for tb_demux_1x4 module
+  end
+
+endmodule
